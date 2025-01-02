@@ -1,0 +1,71 @@
+-- customers テーブル
+CREATE TABLE customers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(32) NOT NULL,
+    tel VARCHAR(15) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- orders テーブル
+CREATE TABLE orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    total_quantity INT NOT NULL,
+    total_payment INT NOT NULL,
+    tax_amount INT NOT NULL,
+    paid BOOLEAN NOT NULL,
+    customer_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
+);
+-- rice_sizes テーブル
+CREATE TABLE rice_sizes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    rice_size VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- menus テーブル
+CREATE TABLE menus (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    price INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+-- order_details テーブル
+CREATE TABLE order_details (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    quantity INT NOT NULL,
+    tax_rate NUMERIC NOT NULL,
+    order_id INT NOT NULL,
+    menu_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (menu_id) REFERENCES menus(id) ON DELETE CASCADE
+);
+
+-- order_detail_options テーブル
+CREATE TABLE order_detail_options (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_detail_id INT NOT NULL,
+    is_wasabi BOOLEAN NOT NULL,
+    rice_size_id INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_detail_id) REFERENCES order_details(id) ON DELETE CASCADE,
+    FOREIGN KEY (rice_size_id) REFERENCES rice_sizes(id) ON DELETE SET NULL
+);
+-- set_menu_details テーブル
+CREATE TABLE set_menu_details (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    set_menu_id INT NOT NULL,
+    single_menu_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (set_menu_id) REFERENCES menus(id) ON DELETE CASCADE,
+    FOREIGN KEY (single_menu_id) REFERENCES menus(id) ON DELETE CASCADE
+);
